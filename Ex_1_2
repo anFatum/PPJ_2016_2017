@@ -1,0 +1,91 @@
+//package ppj_27;
+
+import java.awt.*;
+import java.io.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class Main extends Frame {
+	Color tab[][];
+	public Main(){
+		setSize(640,640);
+		setVisible(true);
+		addWindowListener(
+                new WindowAdapter(){
+                    public void windowClosing(WindowEvent evt){
+                        System.exit(0);
+                    }
+                }
+        );
+
+	}
+	public void paint(Graphics g){
+		for (int i = 0; i<tab.length; i++){
+			for (int j =0; j<tab[i].length; j++){
+				g.setColor(tab[i][j]);
+				g.drawLine(100+j, 100+i, 100+j, 100+i);
+				g.drawLine(100+j, tab.length+100-i+tab.length, 100+j, tab.length+100-i+tab.length);
+			}
+		}
+	}
+	public void load(){
+		FileReader fr;
+		try {
+			fr = new FileReader("D:\\Snow.ppm");    //.ppm file path
+        for (int i = 0; i<=25; i++){    // deleting first lines
+            fr.read();
+        }
+        int hight = 0;
+        hight += (fr.read()-48)*100;
+        hight += (fr.read()-48)*10;
+        hight += (fr.read()-48);
+        int width = 0;
+        fr.read();
+        width+= (fr.read()-48)*100;
+        width += (fr.read()-48)*10;
+        width += (fr.read()-48);
+        fr.read();
+        fr.read();
+        fr.read();
+        fr.read();
+        fr.read();
+        tab = new Color[width][hight];
+        String r ="";
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        for(int i = 0; i<tab.length; i++){
+            for (int j = 0; j<tab[i].length; j++) {
+                for(int o = 0; o<3; o++){
+
+                int tmp = fr.read();
+                if(tmp == 10)
+                    tmp = fr.read();
+                while(tmp!=' ') {
+                    r += (char) tmp;
+                    tmp = fr.read();
+                }
+                if(o ==0)
+                    red = Integer.parseInt(r);
+                if(o ==1)
+                    green = Integer.parseInt(r);
+                if(o ==2)
+                    blue = Integer.parseInt(r);
+                
+                    r = "";
+                }
+                tab[i][j] = new Color(red,green,blue);
+                }
+            }
+        fr.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void main(String[] args){
+		new Main().load();
+	}
+	
+}
